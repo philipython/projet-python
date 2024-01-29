@@ -69,12 +69,9 @@ class Grid():
         cell1, cell2: tuple[int]
             The two cells to swap. They must be in the format (i, j) where i is the line and j the column number of the cell. 
         """
-        if self[cell1]==self[cell2+(0,1)] or self[cell1]==self[cell2+(1,0)] or self[cell1]==self[cell2+(-1,0)] or self[cell1]==self[cell2+(0,-1)]:
-            b=cell1
-            c=cell2
-            cell2=b
-            cell1=c
-        return(self) 
+        i1, j1 = cell1
+        i2, j2 = cell2
+        self.state[i1][j1], self.state[i2][j2] = self.state[i2][j2], self.state[i1][j1]
 
     def swap_seq(self, cell_pair_list):
         """
@@ -86,6 +83,8 @@ class Grid():
             List of swaps, each swap being a tuple of two cells (each cell being a tuple of integers). 
             So the format should be [((i1, j1), (i2, j2)), ((i1', j1'), (i2', j2')), ...].
         """
+        for cell1, cell2 in cell_pair_list:
+            self.swap(cell1, cell2)
         
 
     @classmethod
