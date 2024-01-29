@@ -78,7 +78,8 @@ class Grid():
         """
         i1, j1 = cell1
         i2, j2 = cell2
-        if is_sorted([self[cell1], self[cell2]])==True:
+        A=[self[cell1], self[cell2]]
+        if is_sorted(A)==True:
             self.state[i1][j1], self.state[i2][j2] = self.state[i2][j2], self.state[i1][j1]
             
 
