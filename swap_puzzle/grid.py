@@ -57,6 +57,12 @@ class Grid():
         """
         Checks is the current state of the grid is sorte and returns the answer as a boolean.
         """
+        for i in range(self.m):
+            for j in range(self.n - 1):
+                if self.state[i][j] > self.state[i][j+1]:
+                    return False
+        return True
+
         # TODO: implement this function (and remove the line "raise NotImplementedError").
         raise NotImplementedError
 
@@ -71,7 +77,9 @@ class Grid():
         """
         i1, j1 = cell1
         i2, j2 = cell2
-        self.state[i1][j1], self.state[i2][j2] = self.state[i2][j2], self.state[i1][j1]
+        if is_sorted([cell1,cell2])==True
+            self.state[i1][j1], self.state[i2][j2] = self.state[i2][j2], self.state[i1][j1]
+            
 
     def swap_seq(self, cell_pair_list):
         """
