@@ -63,8 +63,9 @@ class Grid():
                     return False
         return True
 
-
+    
     def swap(self, cell1, cell2):
+
         """
         Implements the swap operation between two cells. Raises an exception if the swap is not allowed.
 
@@ -75,8 +76,8 @@ class Grid():
         """
         i1, j1 = cell1
         i2, j2 = cell2
-        if self[cell1]==self[cell2+(0,1)] or self[cell1]==self[cell2+(1,0)] or self[cell1]==self[cell2+(-1,0)] or self[cell1]==self[cell2+(0,-1)]
-            self.state[i1][j1], self.state[i2][j2] = self.state[i2][j2], self.state[i1][j1]
+        if (abs(i1-i2)==0 and abs(j1-j2)==1) or (abs(i1-i2)==1 and abs(j1-j2)==0):
+             self.state[i1][j1], self.state[i2][j2] = self.state[i2][j2], self.state[i1][j1]
             
 
     def swap_seq(self, cell_pair_list):
