@@ -62,9 +62,10 @@ class Grid():
                 if self.state[i][j] > self.state[i][j+1]:
                     return False
         return True
-
+'''
         # TODO: implement this function (and remove the line "raise NotImplementedError").
         raise NotImplementedError
+        '''
 
     def swap(self, cell1, cell2):
         """
