@@ -61,6 +61,9 @@ class Grid():
             for j in range(self.n - 1):
                 if self.state[i][j] > self.state[i][j+1]:
                     return False
+        for i in range(0, self.m - 1):
+            if self.state[i][-1] > self.state[i+1][0]:
+                return False
         return True
 
     
