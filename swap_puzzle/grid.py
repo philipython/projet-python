@@ -37,8 +37,8 @@ class GridVisualizer:
         """
         self.screen.fill(self.background_color)
         
-        # Initialize font; you might need to adjust the size for visibility
-        font = pygame.font.Font(None, 24)  # None uses the default font, 24 is the font size
+
+        font = pygame.font.Font(None, 24)
         
         for i in range(self.m):
             for j in range(self.n):
