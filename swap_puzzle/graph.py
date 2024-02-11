@@ -36,6 +36,12 @@ class Graph:
         self.nb_nodes = len(nodes)
         self.nb_edges = 0
         self.edges = []
+
+     def add_node(self, n):
+        self.nodes.append(n)
+        self.nb_nodes += 1
+        self.graph[n] = [] #need to update la liste les noeuds adjassants 
+     
         
     def __str__(self):
         """
@@ -99,6 +105,17 @@ class Graph:
         """ 
         # TODO: implement this function (and remove the line "raise NotImplementedError").
         raise NotImplementedError
+
+        dict = self.graph
+        pile = [(src, [src])]
+        while pile:
+            s, path = pile.pop(0)
+            if s == dst:
+                return path 
+            for i in dict[s]:
+                if i not in path:
+                    pile.append((i, path + [i]))
+        return None
 
     @classmethod
     def graph_from_file(cls, file_name):
