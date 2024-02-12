@@ -49,7 +49,7 @@ class Solver():
                     list_moves.append(((line_index, current_column),(line_index, current_column - 1)))
                     return align_element_in_line(grid, line, current_column - 1, shift + 1, list_moves)
 
-        def get_elements_for_line(grid, line_index,):
+        def get_elements_for_line(grid, line_index):
             """Brings the elements [line*self.grid.n, ... (line+1)*self.grid.n - 1] on the line line_index."""
             big_list_moves = []
             # The line has elements [line*self.grid.n, ... (line+1)*self.grid.n - 1]
