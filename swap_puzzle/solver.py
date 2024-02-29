@@ -29,7 +29,7 @@ class Solver():
             """We shift the column of an element in some line recursively
             Input:
             - line: the list of elements in the line. Is obtained with grid.state[i]
-            - current_position: index of the element to be shifted in the list
+            - current_column: index of the element to be shifted in the list
             - shift: the shift to be applied
             - list_moves: should be left blank. Used as an argument for the recursion
             Output:
@@ -52,9 +52,8 @@ class Solver():
         def get_elements_for_line(grid, line_index):
             """Brings the elements [line*self.grid.n, ... (line+1)*self.grid.n - 1] on the line line_index."""
             big_list_moves = []
-            # The line has elements [line*self.grid.n, ... (line+1)*self.grid.n - 1]
+            # The line has elements [line_index*self.grid.n, ... (line_index+1)*self.grid.n - 1]
             list_elements = list(range(line_index*grid.n+1, (line_index+1)*grid.n+1)) # The numbers start at 1
-            print(f"{list_elements=}")
             #  All elements that are supposed to be on this line/
             for element in list_elements:
                 # Find where it is.

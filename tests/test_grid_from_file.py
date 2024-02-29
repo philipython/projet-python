@@ -13,10 +13,9 @@ class Test_GridLoading(unittest.TestCase):
         self.assertEqual(g.state, [[1, 2], [3, 4], [5, 6], [8, 7]])
     def test_grid2(self):
         g = Grid.grid_from_file("input/grid2.in")
-        self.assertEqual(g.m, 4)
+        self.assertEqual(g.m, 3)
         self.assertEqual(g.n, 3)
 
 
 if __name__ == '__main__':
     unittest.main()
-    

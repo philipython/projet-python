@@ -1,0 +1,18 @@
+
+import sys 
+sys.path.append("swap_puzzle/")
+
+import unittest 
+from grid import Grid
+from solver import Solver
+
+class Test_Solver(unittest.TestCase):
+    def test_grid1(self):
+        grid = Grid.grid_from_file("input/grid1.in")
+        solver = Solver(grid)
+        solver.get_solution()
+
+        assert grid.state[0][0] == 1
+if __name__ == '__main__':
+    unittest.main()
+    
