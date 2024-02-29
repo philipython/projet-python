@@ -1,3 +1,5 @@
+"on execute tout dans le main"
+
 from grid import Grid
 
 g = Grid(2, 3)
@@ -10,3 +12,10 @@ print(file_name)
 
 g = Grid.grid_from_file(file_name)
 print(g)
+
+
+from graph import Graph
+graph = Graph()
+graph.add_edge("Paris","Palaiseau")
+
+"ctrl + clic + run in interractive window : donne les resultats dans une nouvelle fenetre"
