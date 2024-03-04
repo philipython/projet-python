@@ -212,7 +212,8 @@ class Grid():
         return self.path_graph.bfs(current, solved)
     
 
-    @classmethod
+    #create an object from a file (a grid is created with a file)
+    @classmethod # method which has an impact on the class itself
     def grid_from_file(cls, file_name): 
         """
         Creates a grid object from class Grid, initialized with the information from the file file_name.

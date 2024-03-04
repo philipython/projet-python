@@ -14,15 +14,17 @@ class Solver():
         Solves the grid and returns the sequence of swaps at the format 
         [((i1, j1), (i2, j2)), ((i1', j1'), (i2', j2')), ...]. 
         """
-        big_list_moves = []
+        big_list_moves = [] # a list which will contain all moves
 
 
-        # 1. Find the element
+        # 1. Find the position of an element
         def find_element(element, grid):
             for i in range(grid.m):
                 for j in range(grid.n):
                     if grid.state[i][j] == element:
-                        return (i, j)
+                        return (i, j) # return the coordinates of the element
+        #traverses the entire grid of size nm so the complexity is O(mn)"
+
 
         # 2. For each line, give it the elements it should contain
         def align_element_in_line(grid, line_index, current_column, shift, list_moves = []):
@@ -35,19 +37,20 @@ class Solver():
             Output:
             - The list of moves performed.
             """
-            line = grid.state[line_index]
+            line = grid.state[line_index] # state of a line at the beginning
             if shift == 0:
                 return list_moves
             else:
-                if shift >= 1:
+                if shift >= 1: #shift the element to the right
                     
                     line[current_column], line[current_column + 1] = line[current_column + 1], line[current_column]
                     list_moves.append(((line_index, current_column),(line_index, current_column + 1)))
                     return align_element_in_line(grid, line_index, current_column + 1, shift - 1, list_moves)
-                if shift <= -1:
+                if shift <= -1: # shift the element to the left
                     line[current_column-1], line[current_column] = line[current_column], line[current_column-1]
                     list_moves.append(((line_index, current_column),(line_index, current_column - 1)))
                     return align_element_in_line(grid, line, current_column - 1, shift + 1, list_moves)
+            # the complexity is O(n)
 
         def get_elements_for_line(grid, line_index):
             """Brings the elements [line*self.grid.n, ... (line+1)*self.grid.n - 1] on the line line_index."""
@@ -74,6 +77,9 @@ class Solver():
                     grid.swap_seq(list_moves)
                     big_list_moves += list_moves
             return big_list_moves
+        """"
+        This function correctly places all elements that need to be in a given row. For each element, it could potentially call find_element (complexity O(mn)) and then perform a move (complexity O(n)). Executed for n elements per line and for m lines, the complexity of this method is O(m**2 n**2).
+        """
 
         # Now put all elements in the right lines:
         for line_index in range(self.grid.m):
@@ -87,6 +93,7 @@ class Solver():
                         list_moves.append(((i,j),(i,j+1)))
                         grid.state[i][j], grid.state[i][j+1] = grid.state[i][j+1], grid.state[i][j]
             return list_moves
+        # the complexity is O(nm)
 
         while not self.grid.is_sorted():
             big_list_moves += sort_all_lines(self.grid)
