@@ -5,7 +5,7 @@ This is the grid module. It contains the Grid class and its associated methods.
 
 import random
 import pygame
-class GridVisualizer:
+class GridVisualizer: # Defines a class to visualize a grid using Pygame
     def __init__(self, grid):
         """
         Initializes the grid visualizer.
@@ -17,46 +17,50 @@ class GridVisualizer:
         self.grid = grid
         self.m = len(grid)
         self.n = len(grid[0])
-        self.cell_size = 50
-        self.grid_color = (0,0,0)
+        self.cell_size = 50 # Sets a  cell size of 50 pixels for the grid
+        self.grid_color = (0,0,0) # grid line color : black
         
 
-        self.width = self.n * self.cell_size
-        self.height = self.m * self.cell_size
+        self.width = self.n * self.cell_size #Calculates the Pygame window width based on the number of columns and cell size
+        self.height = self.m * self.cell_size #Calculates the Pygame window height based on the number of rows and cell size
         
 
         pygame.init()
-        self.screen = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption("Grid Representation")
+        self.screen = pygame.display.set_mode((self.width, self.height)) #Creates the display window with the calculated dimensions
+        pygame.display.set_caption("Grid Representation") # sets a title
         
 
-        self.background_color = (255, 255, 255)
+        self.background_color = (255, 255, 255) # background color of the screen : white
     
     def draw_grid(self):
         """
         Draws the grid on the window, filling each cell with its value.
         """
-        self.screen.fill(self.background_color)
-        
+        #Fills the screen background with the background color (white)
+        self.screen.fill(self.background_color) 
 
+        # Initialize the style of writting.
         font = pygame.font.Font(None, 24)
         
         for i in range(self.m):
             for j in range(self.n):
+                # Retrieve the value of the current cell
                 cell_value = self.grid[i][j]
                 
-
+                # Define the rectangle for the current cell.
                 rect = pygame.Rect(j * self.cell_size, i * self.cell_size, self.cell_size, self.cell_size)
+                # Draw the cell rectangle using the grid color.
                 pygame.draw.rect(self.screen, self.grid_color, rect, 1)
                 
-
+                # Render the cell value as text
                 text = font.render(str(cell_value), True, (0, 0, 0))
-
+                # Get the position to center the text in the rectangle
                 text_pos = text.get_rect(center=rect.center)
                 
-
+                # put the text at the caalculated position
                 self.screen.blit(text, text_pos)
-                
+
+        # Update the display to show the new grid
         pygame.display.flip()
 
     def run(self):
@@ -68,10 +72,14 @@ class GridVisualizer:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-                    
+
+            # Draw the updated grid each loop iteration
             self.draw_grid()
             
         pygame.quit()
+        
+
+     
 
 
 
