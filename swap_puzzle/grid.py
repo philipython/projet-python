@@ -5,6 +5,10 @@ This is the grid module. It contains the Grid class and its associated methods.
 
 import random
 import pygame
+from collections import deque
+import math 
+import matplotlib.pyplot as plt 
+
 class GridVisualizer: # Defines a class to visualize a grid using Pygame
     def __init__(self, grid):
         """
@@ -308,3 +312,113 @@ class Grid():
                 initial_state[i_line] = line_state
             grid = Grid(m, n, initial_state)
         return grid
+
+
+
+    def bfs_bis(self, dst):
+        # Initialize a graph with the current grid state as a node
+        dico = Graph([self.make_hashable()])
+        m, n = self.m, self.n
+        # Initialize a queue with tuples containing the current state and its path
+        file = deque([(self.make_hashable(), [self.make_hashable()])])
+        # Convert the destination grid to a hashable type
+        ndst = dst.make_hashable()
+
+        while file:
+            # Remove and return the leftmost path
+            s, path = file.popleft()
+            # Check if the current path's endpoint is the destination
+            if s == ndst:
+                return path
+
+            # Explore all possible moves from the current state
+            for i in range(m):
+                for j in range(n):
+                    # Check all four directions where a swap can happen
+                    # Swapping with the cell below
+                    if i < m - 1:
+                        # Create a new grid state by swapping and convert it to hashable
+                        bas = self.swap_seq([((i, j), (i + 1, j))])
+                        h_bas = bas.make_hashable()
+                        # Add a new edge if this state is new
+                        if h_bas not in dico.graph[s]:
+                            dico.add_edge(s, h_bas)
+
+                    # Swapping with the cell above
+                    if i > 0:
+                        haut = self.swap_seq([((i, j), (i - 1, j))])
+                        h_haut = haut.make_hashable()
+                        if h_haut not in dico.graph[s]:
+                            dico.add_edge(s, h_haut)
+
+                    # Swapping with the cell to the right
+                    if j < n - 1:
+                        droite = self.swap_seq([((i, j), (i, j + 1))])
+                        h_droite = droite.make_hashable()
+                        if h_droite not in dico.graph[s]:
+                            dico.add_edge(s, h_droite)
+
+                    # Swapping with the cell to the left
+                    if j > 0:
+                        gauche = self.swap_seq([((i, j), (i, j - 1))])
+                        h_gauche = gauche.make_hashable()
+                        if h_gauche not in dico.graph[s]:
+                            dico.add_edge(s, h_gauche)
+
+            # Add new states to explore to the queue
+            for i in dico.graph[s]:
+                if i not in path:
+                    file.append((i, path + [i]))
+                
+        return None
+
+    def heuristique0(self):
+        # Calculate an heuristic based on the number of misplaced tiles
+        n, m = self.n, self.m
+        nb = 0
+        # check if the cells are correctly placed
+        for i in range(m):
+            for j in range(n):
+                # count the number of cells not in correct position
+                if l[i][j] != j + n * i + 1:
+                    nb += 1
+        # Return the number of misplaced cells
+        return nb
+
+    @staticmethod
+    def trouver_coordonnees(liste, element):
+        # Find the coordinates of an element in the grid
+        for i, sous_liste in enumerate(liste):
+            if element in sous_liste:
+                # Return the coordinates once the element is found.
+                return i, sous_liste.index(element)
+        # Return None if the element is not found
+        return None
+
+    def heuristique2(self):
+        # Calculate heuristic (Euclidean distance from each cell to its target position)
+        n, m = self.n, self.m
+        dist = 0
+        # Assign a target index k to each cell
+        for i in range(m):
+            for j in range(n):
+                k += 1
+                # Use trouver_coordonnees to get the current position of cell k.
+                x, y = self.trouver_coordonnees(self.state, k)
+                # Compute the Euclidean distance and add it to the total sum.
+            dist += math.sqrt((x - i) ** 2 + (y - j) ** 2)
+    return dist
+
+def heuristique1(self):
+    # Calculate heuristic based on the Manhattan distance for each tile to its target location.
+    n, m, l = self.n, self.m, self.state
+    dist = 0
+    # Iterate to compute Manhattan distance for each tile.
+    for i in range(m):
+        for j in range(n):
+            k += 1
+            # Find the current position of k and calculate Manhattan distance.
+            x, y = self.trouver_coordonnees(l, k)
+            dist += abs(x - i) + abs(y - j)
+    # Return the total distance halved, though typically not needed for Manhattan distance.
+    return dist / 2
