@@ -406,19 +406,80 @@ class Grid():
                 # Use trouver_coordonnees to get the current position of cell k.
                 x, y = self.trouver_coordonnees(self.state, k)
                 # Compute the Euclidean distance and add it to the total sum.
-            dist += math.sqrt((x - i) ** 2 + (y - j) ** 2)
-    return dist
+                dist += math.sqrt((x - i) ** 2 + (y - j) ** 2)
+        return dist
 
-def heuristique1(self):
-    # Calculate heuristic based on the Manhattan distance for each tile to its target location.
-    n, m, l = self.n, self.m, self.state
-    dist = 0
-    # Iterate to compute Manhattan distance for each tile.
-    for i in range(m):
-        for j in range(n):
-            k += 1
-            # Find the current position of k and calculate Manhattan distance.
-            x, y = self.trouver_coordonnees(l, k)
-            dist += abs(x - i) + abs(y - j)
-    # Return the total distance halved, though typically not needed for Manhattan distance.
-    return dist / 2
+    def heuristique1(self):
+        # Calculate heuristic based on the Manhattan distance for each tile to its target location.
+        n, m, l = self.n, self.m, self.state
+        dist = 0
+        # Iterate to compute Manhattan distance for each tile.
+        for i in range(m):
+            for j in range(n):
+                k += 1
+                # Find the current position of k and calculate Manhattan distance.
+                x, y = self.trouver_coordonnees(l, k)
+                dist += abs(x - i) + abs(y - j)
+        # Return the total distance 
+    return dist 
+
+
+
+    def bfs_ter(self, dst):
+        dico = Graph([self.make_hashable()])
+        m, n = self.m, self.n  # Grid dimensions
+        # Initialize a queue to store explored paths
+        file = deque([(self.make_hashable(), [self.make_hashable()])])
+        ndst = dst.make_hashable()
+    
+        while file:
+            # Pop the first element from the queue for processing.
+            s, path = file.popleft()
+            # If the current node is the destination, return the found path.
+            if s == ndst:
+                return path
+    
+            # Iterate through all grid cells to find possible movements.
+            for i in range(m):
+                for j in range(n):
+                    # Evaluate possible movements and add them if new.
+                    if i < m - 1:  # Move down.
+                        c = self.swap([(i, j), (i + 1, j)])  # Perform the swap.
+                        nc = c.make_hashable()  # Convert to a hashable node.
+                        # Check the uniqueness of the new node before adding it.
+                        if nc not in dico.graph[s]:
+                            dico.add_edge(s, nc)  # Add the edge to the graph.
+                            # Store the node and its heuristic value for future comparison.
+                            liste_des_voisins.append((nc, c.heuristique1()))
+
+                    if i > 0:
+                        d = (self.denod(s)).swap((i,j), (i-1,j))
+                        nd = d.nod()
+                        if nd not in dico.graph[s]:
+                            dico.add_edge(s, nd)
+                            liste_des_voisins.append((nd, d.heuristique1()))
+
+                    if j < n-1:
+                        f = (self.denod(s)).swap((i,j), (i,j+1))
+                        nf = f.nod()
+                        if nf not in dico.graph[s]:
+                            dico.add_edge(s, nf)
+                            liste_des_voisins.append((nf, f.heuristique1()))
+
+                    if j > 0:
+                        h = (self.denod(s)).swap((i,j), (i,j-1))
+                        nh = h.nod()
+                        if nh not in dico.graph[s]:
+                            dico.add_edge(s, nh)
+                            liste_des_voisins.append((nh, h.heuristique1()))
+                    
+            # Sort neighbors based on their heuristic evaluation to choose the optimal path.
+            liste_des_voisins.sort(key=lambda x: x[1])
+    
+            # Queue new possible paths for future exploration.
+            for e in liste_des_voisins:
+                if e[0] not in path:
+                    file.append((e[0], path + [e[0]]))
+    
+        # Return None if no path is found to the destination.
+        return None
