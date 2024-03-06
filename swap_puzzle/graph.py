@@ -82,6 +82,12 @@ class Graph:
         self.nb_edges += 1
         self.edges.append((node1, node2))
 
+
+
+    
+    """ 
+    Question 5 : Algorithme de parcours en largeur
+    """
     def bfs(self, node_1, node_2): 
         """
         Finds a shortest path from src to dst by BFS.  
@@ -98,26 +104,33 @@ class Graph:
         path: list[NodeType] | None
             The shortest path from src to dst. Returns None if dst is not reachable from src
         """ 
+        
         def find_neighbors(edges, node):
+            #filters edges where the first node matches the given node
             edges_out = [edge for edge in edges if edge[0] == node]
+            # Extracts second nodes to get the neighbors
             neighbors = [edge[1] for edge in edges_out]
             return neighbors
+        
         graph = self
-        unoriented_edges = list(set(graph.edges + [(edge[1], edge[0]) for edge in graph.edges]))
-        list_paths = [edge for edge in unoriented_edges if edge[0] == node_1]
+        # Start with paths that are just direct edges from node_1.
+        list_paths = [edge for edge in self.edges if edge[0] == node_1]
         if node_1 == node_2:
             return []
         found = False
         while not found:
             new_paths = []
+            # Iterate through all current paths
             for path in list_paths:
                 if path[-1] == node_2:
                     # Found it! Return the distance and the path
                     return path
                 else:
-                    path_neighbors = find_neighbors(unoriented_edges, path[-1])
+                    # Extend each path by one neighbor and store these new paths.
+                    path_neighbors = find_neighbors(self.edges, path[-1])
                     new_paths += [path + (new_node,) for new_node in path_neighbors]
             list_paths = new_paths
+            
 
 
     @classmethod
