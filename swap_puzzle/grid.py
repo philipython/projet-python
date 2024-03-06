@@ -236,7 +236,8 @@ class Grid():
             perm_tuple = tuple(tuple(line) for line in perm_lines)
             tuples.append(perm_tuple)
         return tuples
-        
+
+
     """
     We create a function that implements all the edges possible between all the nodes (only one swap between a grid and another)
     """
