@@ -2,12 +2,12 @@
 This is the grid module. It contains the Grid class and its associated methods.
 """
 
-
 import random
 import pygame
 from collections import deque
 import math 
 import matplotlib.pyplot as plt 
+
 
 class GridVisualizer: # Defines a class to visualize a grid using Pygame
     def __init__(self, grid):
@@ -28,12 +28,12 @@ class GridVisualizer: # Defines a class to visualize a grid using Pygame
         self.width = self.n * self.cell_size #Calculates the Pygame window width based on the number of columns and cell size
         self.height = self.m * self.cell_size #Calculates the Pygame window height based on the number of rows and cell size
         
-
+        """
         pygame.init()
         self.screen = pygame.display.set_mode((self.width, self.height)) #Creates the display window with the calculated dimensions
         pygame.display.set_caption("Grid Representation") # sets a title
+        """
         
-
         self.background_color = (255, 255, 255) # background color of the screen : white
     
     def draw_grid(self):
@@ -125,17 +125,13 @@ class Grid():
     def __str__(self):
         """
         Prints the state of the grid as text :
-        
+        """
         output = f"The grid is in the following state:\n"
         for i in range(self.m): 
             output += f"{self.state[i]}\n"
         return output
-        """
-        """
-        Prints the state of the grid as a grid
-        """
-        self.visualizer = GridVisualizer(self.state)
-        self.visualizer.run()
+
+
 
     
     def __repr__(self): 
@@ -210,7 +206,7 @@ class Grid():
     Question 6 : transformation des noeuds en type d objets hachables 
     """
     
-     def make_hashable(self):
+    def make_hashable(self):
         """
         Tuples are hashable, so just convert the graph to a tuple
         """
@@ -421,7 +417,7 @@ class Grid():
                 x, y = self.trouver_coordonnees(l, k)
                 dist += abs(x - i) + abs(y - j)
         # Return the total distance 
-    return dist 
+        return dist 
 
 
 
@@ -444,42 +440,42 @@ class Grid():
                 for j in range(n):
                     # Evaluate possible movements and add them if new.
                     if i < m - 1:  # Move down.
-                        c = self.swap([(i, j), (i + 1, j)])  # Perform the swap.
-                        nc = c.make_hashable()  # Convert to a hashable node.
+                        down = self.swap([(i, j), (i + 1, j)])  # Perform the swap.
+                        h_down = down.make_hashable()  # Convert to a hashable node.
                         # Check the uniqueness of the new node before adding it.
-                        if nc not in dico.graph[s]:
-                            dico.add_edge(s, nc)  # Add the edge to the graph.
+                        if h_down not in dico.graph[s]:
+                            dico.add_edge(s, h_down)  # Add the edge to the graph.
                             # Store the node and its heuristic value for future comparison.
-                            liste_des_voisins.append((nc, c.heuristique1()))
+                            liste_des_voisins.append((h_down, down.heuristique1()))
 
-                    if i > 0:
-                        d = (self.denod(s)).swap((i,j), (i-1,j))
-                        nd = d.nod()
-                        if nd not in dico.graph[s]:
-                            dico.add_edge(s, nd)
-                            liste_des_voisins.append((nd, d.heuristique1()))
+                    if i > 0:  # Move up.
+                        up = self.swap([(i, j), (i - 1, j)])
+                        h_up = up.make_hashable()
+                        if h_up not in dico.graph[s]:
+                            dico.add_edge(s, h_up)
+                            liste_des_voisins.append((h_up, up.heuristique1()))
 
                     if j < n-1:
-                        f = (self.denod(s)).swap((i,j), (i,j+1))
-                        nf = f.nod()
-                        if nf not in dico.graph[s]:
-                            dico.add_edge(s, nf)
-                            liste_des_voisins.append((nf, f.heuristique1()))
+                        right = self.swap([(i, j), (i, j+1)])
+                        h_right = right.make_hashable()
+                        if h_right not in dico.graph[s]:
+                            dico.add_edge(s, h_right)
+                            liste_des_voisins.append((h_right, right.heuristique1()))
 
                     if j > 0:
-                        h = (self.denod(s)).swap((i,j), (i,j-1))
-                        nh = h.nod()
-                        if nh not in dico.graph[s]:
-                            dico.add_edge(s, nh)
-                            liste_des_voisins.append((nh, h.heuristique1()))
+                        left = self.swap([(i, j), (i, j-1)])
+                        h_left = left.make_hashable()
+                        if h_left not in dico.graph[s]:
+                            dico.add_edge(s, h_left)
+                            liste_des_voisins.append((h_left, left.heuristique1()))
                     
             # Sort neighbors based on their heuristic evaluation to choose the optimal path.
             liste_des_voisins.sort(key=lambda x: x[1])
     
             # Queue new possible paths for future exploration.
-            for e in liste_des_voisins:
-                if e[0] not in path:
-                    file.append((e[0], path + [e[0]]))
+            for elem in liste_des_voisins:
+                if elem[0] not in path:
+                    file.append((elem[0], path + [elem[0]]))
     
         # Return None if no path is found to the destination.
         return None
