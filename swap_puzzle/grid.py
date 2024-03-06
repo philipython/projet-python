@@ -132,12 +132,6 @@ class Grid():
         """
         return f"<grid.Grid: m={self.m}, n={self.n}>"
     
-    def make_hashable(self):
-        """Tuples are hashable, so just convert the graph to a tuple"""
-        list_tuples = [tuple(self.state[i]) for i in range(self.m)]
-        tuple_tuples = tuple(list_tuples)
-        return tuple_tuples
-
 
     """ 
     Question 2
@@ -189,6 +183,7 @@ class Grid():
     """ 
     Question 4 : Représentation graphique
     """
+    
     def trace(self):
         _, ax = plt.subplots()
         ax.matshow(self.state, cmap=plt.cm.Blues)
@@ -197,11 +192,35 @@ class Grid():
                 c = self.state[j][i]
                 ax.text(i, j, str(c), va='center', ha='center')
         plt.show()
-            
+
+    
+    """ 
+    Question 6 : transformation des noeuds en type d objets hachables 
+    """
+    
+     def make_hashable(self):
+        """
+        Tuples are hashable, so just convert the graph to a tuple
+        """
+        list_tuples = [tuple(self.state[i]) for i in range(self.m)]
+        tuple_tuples = tuple(list_tuples)
+        return tuple_tuples
+
+
+    """ 
+    Question 7 : creation de bfs pour le swapp_puzzle
+    """
+
+    """ 
+    We create an initial function that implements all possible states of the grid to create all possible nodes. 
+    """ 
     def grids_graph(self):
         m = self.m
         n = self.n
         from itertools import permutations
+        """
+        function to create all possible arrangements of numbers from 1 to m*n 
+        """
         all_permutations = permutations(range(1, n*m + 1))
         tuples = []
         for permutation in all_permutations:
@@ -209,6 +228,7 @@ class Grid():
             perm_tuple = tuple(tuple(line) for line in perm_lines)
             tuples.append(perm_tuple)
         return tuples
+        
 
     def all_edges(self):
         if not hasattr(self, "path_graph"):
@@ -230,6 +250,7 @@ class Grid():
                 list_edges.add((node, target_tuple))
                 list_edges.add((target_tuple, node))
         return list(list_edges)
+        
     def find_best_path(self):
         if not hasattr(self, "path_graph"):
             path_graph_nodes = self.grids_graph()
