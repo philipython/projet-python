@@ -73,6 +73,8 @@ class GridVisualizer:
             
         pygame.quit()
 
+
+
 class Grid():
     """
     A class representing the grid from the swap puzzle. It supports rectangular grids. 
@@ -109,10 +111,21 @@ class Grid():
 
 
     def __str__(self):
+        """
+        Prints the state of the grid as text :
+        
+        output = f"The grid is in the following state:\n"
+        for i in range(self.m): 
+            output += f"{self.state[i]}\n"
+        return output
+        """
+        """
+        Prints the state of the grid as a grid
+        """
         self.visualizer = GridVisualizer(self.state)
         self.visualizer.run()
 
-
+    
     def __repr__(self): 
         """
         Returns a representation of the grid with number of rows and columns.
@@ -124,6 +137,11 @@ class Grid():
         list_tuples = [tuple(self.state[i]) for i in range(self.m)]
         tuple_tuples = tuple(list_tuples)
         return tuple_tuples
+
+
+    """ 
+    Question 2
+    """
     
     def is_sorted(self):
         """
@@ -140,7 +158,6 @@ class Grid():
 
     
     def swap(self, cell1, cell2):
-
         """
         Implements the swap operation between two cells. Raises an exception if the swap is not allowed.
 
@@ -154,6 +171,7 @@ class Grid():
         if (abs(i1-i2)==0 and abs(j1-j2)==1) or (abs(i1-i2)==1 and abs(j1-j2)==0):
              self.state[i1][j1], self.state[i2][j2] = self.state[i2][j2], self.state[i1][j1]
 
+    
     def swap_seq(self, cell_pair_list):
         """
         Executes a sequence of swaps. 
@@ -166,7 +184,20 @@ class Grid():
         """
         for cell_1, cell_2 in cell_pair_list:
             self.swap(cell_1, cell_2)
+
         
+    """ 
+    Question 4 : Représentation graphique
+    """
+    def trace(self):
+        _, ax = plt.subplots()
+        ax.matshow(self.state, cmap=plt.cm.Blues)
+        for i in range(self.n):
+            for j in range(self.m):
+                c = self.state[j][i]
+                ax.text(i, j, str(c), va='center', ha='center')
+        plt.show()
+            
     def grids_graph(self):
         m = self.m
         n = self.n
