@@ -229,28 +229,35 @@ class Grid():
             tuples.append(perm_tuple)
         return tuples
         
-
+    """
+    We create a function that implements all the edges possible between all the nodes (only one swap between a grid and another)
+    """
     def all_edges(self):
-        if not hasattr(self, "path_graph"):
-            self.path_graph = Graph(self.grids_graph())
+        if not hasattr(self, "path_graph"): # Checks if path_graph attribute exists in the object; if not, it initializes it
+            self.path_graph = Graph(self.grids_graph()) #Creates a Graph with all possible grid states.
         nodes = self.path_graph.nodes
-        from copy import deepcopy
+        from copy import deepcopy # to copy the grid to make transpositions possible
         m = len(nodes[0])
         n = len(nodes[0][0])
-        list_transpositions = [((i,j),(i,j+1)) for i in range(m) for j in range(n-1)] + [((i,j),(i+1,j)) for i in range(m-1) for j in range(n)]
+        list_transpositions = [((i,j),(i,j+1)) for i in range(m) for j in range(n-1)] + [((i,j),(i+1,j)) for i in range(m-1) for j in range(n)] #Creates a list of all possible cell swaps (transpositions) within the grid
         list_edges = set()
         for node in nodes:
             # Find all possible neighbors
-            node_list = [list(line) for line in node]
+            node_list = [list(line) for line in node] # transforme to make mutable
             for transposition in list_transpositions:
-                target = deepcopy(node_list)
-                ((i_0, j_0), (i_1, j_1)) = transposition
-                target[i_0][j_0], target[i_1][j_1] = target[i_1][j_1], target[i_0][j_0]
+                target = deepcopy(node_list) 
+                ((i_0, j_0), (i_1, j_1)) = transposition # Unpacks the row and column indices for swapping cells
+                target[i_0][j_0], target[i_1][j_1] = target[i_1][j_1], target[i_0][j_0] # makes the swap
                 target_tuple = tuple(tuple(line) for line in target)
-                list_edges.add((node, target_tuple))
-                list_edges.add((target_tuple, node))
+                list_edges.add((node, target_tuple)) #Adds the edge to the set
+                list_edges.add((target_tuple, node)) # adds the edge in the other way 
         return list(list_edges)
-        
+
+    """
+    We can create a complete graph from the grid
+    We will apply BFS to the grid, starting from 'self' (the current grid), and aiming for the solved grid
+    We will find the best path between the current grid and the solved one
+    """
     def find_best_path(self):
         if not hasattr(self, "path_graph"):
             path_graph_nodes = self.grids_graph()
