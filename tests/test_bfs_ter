@@ -1,0 +1,31 @@
+import sys 
+sys.path.append("swap_puzzle/")
+
+import unittest 
+from grid import Grid
+from graph import Graph
+
+
+class TestBfsTer(unittest.TestCase):
+    def test_bfs_ter(self):
+        source_grid = Grid(2, 2, [[1, 2], [4, 3]])
+        
+        target_state = [[1, 2], [3, 4]]
+        target_grid = Grid(2, 2, target_state)
+
+        source_grid.path_graph = Graph(source_grid.grids_graph())  # Dependency: grids_graph
+        source_grid.path_graph.edges = source_grid.all_edges()     # Dependency: all_edges
+
+        # it requires a single swap.
+        path = source_grid.bfs_ter(target_grid)
+
+        # Defining the expected path
+        expected_path = [
+            ((1, 2), (4, 3)),  # initial state
+            ((1, 2), (3, 4))   # state after swapping 4 and 3 to reach the target
+        ]
+
+        self.assertEqual(path, expected_path)
+
+if __name__ == '__main__':
+    unittest.main()

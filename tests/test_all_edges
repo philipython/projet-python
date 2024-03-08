@@ -1,0 +1,37 @@
+import sys 
+sys.path.append("swap_puzzle/")
+
+import unittest 
+from grid import Grid
+from graph import Graph
+
+class TestAllEdges(unittest.TestCase):
+    def test_all_edges(self):
+        grid = Grid(2, 2)
+        edges = grid.all_edges()
+
+        # Expected edges for a 2x2 grid
+        expected_edges = {
+            ((1, 2), (3, 2)),  # Swap between 1 and 3
+            ((1, 2), (1, 4)),  # Swap between 2 and 4
+            ((1, 2), (2, 1)),  # Swap between 1 and 2, horizontal swap
+            ((3, 2), (3, 4)),  # Swap between 3 and 4
+            ((2, 1), (4, 1)), 
+            ((2, 1), (2, 3)),  
+            ((2, 1), (1, 2)),  
+            ((4, 3), (4, 1))   
+        }
+
+        # Transforme the list of tuples in a set in order to compare
+        generated_edges = {frozenset(edge) for edge in edges}
+
+        # Check if all expected edges are present in the generated edges
+        for expected_edge in expected_edges:
+            self.assertIn(frozenset(expected_edge), generated_edges)
+
+        # Verify the number of unique edges matches expectation
+        # it should have 4 unique swaps.
+        self.assertEqual(len(generated_edges), 4)
+
+if __name__ == '__main__':
+    unittest.main()

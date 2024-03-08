@@ -1,0 +1,20 @@
+import sys 
+sys.path.append("swap_puzzle/")
+
+import unittest 
+from grid import Grid
+from graph import Graph
+
+
+class TestAddEdge(unittest.TestCase):
+    
+    def test_add_edge(self):
+        graph = Graph([1, 2])
+        graph.add_edge(1, 2)
+        self.assertIn(2, graph.graph[1])
+        self.assertIn(1, graph.graph[2])
+        self.assertEqual(graph.nb_edges, 1)
+        self.assertIn((1, 2), graph.edges)
+
+if __name__ == '__main__':
+    unittest.main()

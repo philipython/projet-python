@@ -1,0 +1,32 @@
+import sys 
+sys.path.append("swap_puzzle/")
+
+import unittest 
+from grid import Grid
+from graph import Graph
+
+class TestBfsBis(unittest.TestCase):
+    def test_bfs_bis(self):
+        source_grid = Grid(2, 2, [[1, 2], [4, 3]])
+        
+        # one swap to reach the target : swap(4, 3)
+        target_state = [[1, 2], [3, 4]]
+        target_grid = Grid(2, 2, target_state)
+
+        source_grid.path_graph = Graph(source_grid.grids_graph()) 
+        source_grid.path_graph.edges = source_grid.all_edges()    
+
+        # The bfs_bis method should find the shortest path from the source state to the target state.
+        #  just a swap: swap positions (1, 1) with (1, 0) 
+        best_path = source_grid.bfs_bis(target_grid)
+
+
+        expected_path = [
+            ((1, 2), (4, 3)),  # initial state
+            ((1, 2), (3, 4))   # after swap (1, 1) and (1, 0)
+        ]
+
+        self.assertEqual(best_path, expected_path)
+
+if __name__ == '__main__':
+    unittest.main()

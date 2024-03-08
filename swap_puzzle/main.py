@@ -4,6 +4,7 @@ ctrl + clic + run in interractive window : donne les resultats dans une nouvelle
 
 from grid import Grid
 from graph import Graph
+from collections import deque
 
 # test is_sorted
 print("test is_sorted : ")
@@ -65,6 +66,7 @@ nouvelle_grille1 = Grid(len(grille_init1),len(grille_init1[0]), grille_init1)
 arrangements = nouvelle_grille1.grids_graph()
 print(arrangements)
 
+"""
 # test all_edges
 print("test all_edges")
 grille_init1 = [[1,3],[4,2]]
@@ -72,6 +74,69 @@ nouvelle_grille1 = Grid(len(grille_init1),len(grille_init1[0]), grille_init1)
 
 noeuds = nouvelle_grille1.all_edges()
 print(noeuds)
+
+# test find_best_path
+print("test find_best_path")
+grille_init1 = [[1,3],[4,2]]
+nouvelle_grille1 = Grid(len(grille_init1),len(grille_init1[0]), grille_init1)
+
+best = nouvelle_grille1.find_best_path()
+print(best)
+
+
+#test bfs_bis
+print("test bfs_bis")
+grille_init1 = [[1, 3], [4, 2]]
+grille_init2 = [[1, 2], [3, 4]]  
+nouvelle_grille1 = Grid(len(grille_init1), len(grille_init1[0]), grille_init1)
+nouvelle_grille2 = Grid(len(grille_init2), len(grille_init2[0]), grille_init2)  # Create Grid object for destination
+
+best2 = nouvelle_grille1.bfs_bis(nouvelle_grille2)
+print(best2)
+"""
+
+#test heuristique0
+print("test heuristique0")
+grille_init1 = [[1,3],[4,2]]
+nouvelle_grille1 = Grid(len(grille_init1),len(grille_init1[0]), grille_init1)
+
+count = nouvelle_grille1.heuristique0()
+print(count)
+
+#test trouver_coordonnees
+print("test trouver_coordonnees")
+grille_init1 = [[1,3],[4,2]]
+nouvelle_grille1 = Grid(len(grille_init1),len(grille_init1[0]), grille_init1)
+
+coordonnees = Grid.trouver_coordonnees(nouvelle_grille1.state, 3)
+print(coordonnees)
+
+
+# test heuristique1
+print("test heuristique1")
+grille_init1 = [[1, 3], [4, 2]]  
+nouvelle_grille1 = Grid(len(grille_init1), len(grille_init1[0]), grille_init1)
+
+heuristic_value = nouvelle_grille1.heuristique1()
+print(heuristic_value)
+
+
+# test Astar
+print("test bfs_ter")
+grille_init1 = [[1, 3], [4, 2]]
+nouvelle_grille1 = Grid(len(grille_init1), len(grille_init1[0]), grille_init1)
+
+grille_target = [[1, 2], [3, 4]]  
+nouvelle_grille_target = Grid(len(grille_target), len(grille_target[0]), grille_target)
+
+path = nouvelle_grille1.bfs_ter(nouvelle_grille_target)
+print(path) 
+
+
+
+
+
+
 
 
 

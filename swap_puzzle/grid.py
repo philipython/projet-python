@@ -375,7 +375,7 @@ class Grid():
         for i in range(m):
             for j in range(n):
                 # count the number of cells not in correct position
-                if l[i][j] != j + n * i + 1:
+                if self.state[i][j] != j + n * i + 1:
                     nb += 1
         # Return the number of misplaced cells
         return nb
@@ -390,23 +390,12 @@ class Grid():
         # Return None if the element is not found
         return None
 
-    def heuristique2(self):
-        # Calculate heuristic (Euclidean distance from each cell to its target position)
-        n, m = self.n, self.m
-        dist = 0
-        # Assign a target index k to each cell
-        for i in range(m):
-            for j in range(n):
-                k += 1
-                # Use trouver_coordonnees to get the current position of cell k.
-                x, y = self.trouver_coordonnees(self.state, k)
-                # Compute the Euclidean distance and add it to the total sum.
-                dist += math.sqrt((x - i) ** 2 + (y - j) ** 2)
-        return dist
+
 
     def heuristique1(self):
         # Calculate heuristic based on the Manhattan distance for each tile to its target location.
         n, m, l = self.n, self.m, self.state
+        k=0
         dist = 0
         # Iterate to compute Manhattan distance for each tile.
         for i in range(m):

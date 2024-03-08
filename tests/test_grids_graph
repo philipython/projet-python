@@ -1,0 +1,30 @@
+import sys 
+sys.path.append("swap_puzzle/")
+
+import unittest 
+from grid import Grid
+from graph import Graph
+
+
+class TestGridsGraph(unittest.TestCase):
+    def test_grids_graph(self):
+        # Test if a 2*2 grid have 24 permutations
+        grid = Grid(2, 2)
+        graphs = grid.grids_graph()
+        self.assertEqual(len(graphs), 24)
+
+        # Verify the structure of the graphs 
+        # Each graph state should be a tuple of tuples
+        for graph_state in graphs:
+            self.assertIsInstance(graph_state, tuple)
+            for row in graph_state:
+                self.assertIsInstance(row, tuple)
+
+        # look at a few permutations to ensure they are present
+        expected_permutation1 = ((1, 2), (3, 4))
+        expected_permutation2 = ((4, 3), (2, 1))
+        self.assertIn(expected_permutation1, graphs)
+        self.assertIn(expected_permutation2, graphs)
+
+if __name__ == '__main__':
+    unittest.main()

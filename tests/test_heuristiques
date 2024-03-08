@@ -1,0 +1,40 @@
+import sys 
+sys.path.append("swap_puzzle/")
+
+import unittest
+from grid import Grid
+
+class TestHeuristique(unittest.TestCase):
+    def test_heuristique0(self):
+        # Test case with a known number of misplaced tiles
+        print("Test heuristique0")
+        grille_init = [[1, 3], [4, 2]]
+        expected_misplaced = 2 
+
+        grid = Grid(2, 2, grille_init)
+        misplaced_count = grid.heuristique0()
+        # test if the calculated number of misplaced tiles equals to the expected number
+        self.assertEqual(misplaced_count, expected_misplaced)
+
+     
+        grille_sorted = [[1, 2], [3, 4]]
+        expected_misplaced_sorted = 0  # No tiles should be misplaced
+        grid_sorted = Grid(2, 2, grille_sorted)
+        misplaced_count_sorted = grid_sorted.heuristique0()
+
+        self.assertEqual(misplaced_count_sorted, expected_misplaced_sorted)
+
+    def test_heuristique1(self):
+            grid = Grid(2, 2, [[1, 3], [2, 4]])
+
+            # Calculate the Manhattan distance 
+            heuristic_value = grid.heuristique1()
+
+            # expected value : sum of the distances for each misplaced tile.
+            expected_value = 4  # 0 (for 1) + 2 (for 3) + 2 (for 2) + 0 (for 4)
+
+            self.assertEqual(heuristic_value, expected_value)
+
+
+if __name__ == '__main__':
+    unittest.main()
