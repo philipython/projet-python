@@ -132,8 +132,6 @@ class Grid():
         return output
 
 
-
-    
     def __repr__(self): 
         """
         Returns a representation of the grid with number of rows and columns.
@@ -172,7 +170,7 @@ class Grid():
         i2, j2 = cell2
         if (abs(i1-i2)==0 and abs(j1-j2)==1) or (abs(i1-i2)==1 and abs(j1-j2)==0):
              self.state[i1][j1], self.state[i2][j2] = self.state[i2][j2], self.state[i1][j1]
-
+        return self
     
     def swap_seq(self, cell_pair_list):
         """
@@ -186,6 +184,7 @@ class Grid():
         """
         for cell_1, cell_2 in cell_pair_list:
             self.swap(cell_1, cell_2)
+        return self
 
         
     """ 
