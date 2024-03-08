@@ -7,6 +7,7 @@ import pygame
 from collections import deque
 import math 
 import matplotlib.pyplot as plt 
+from graph import Graph
 
 
 class GridVisualizer: # Defines a class to visualize a grid using Pygame
@@ -209,7 +210,7 @@ class Grid():
         """
         Tuples are hashable, so just convert the graph to a tuple
         """
-        list_tuples = [tuple(self.state[i]) for i in range(self.m)]
+        list_tuples = (tuple(self.state[i]) for i in range(self.m))
         tuple_tuples = tuple(list_tuples)
         return tuple_tuples
 
@@ -367,18 +368,14 @@ class Grid():
                 
         return None
 
+   
     def heuristique0(self):
-        # Calculate an heuristic based on the number of misplaced tiles
-        n, m = self.n, self.m
-        nb = 0
-        # check if the cells are correctly placed
-        for i in range(m):
-            for j in range(n):
-                # count the number of cells not in correct position
-                if self.state[i][j] != j + n * i + 1:
-                    nb += 1
-        # Return the number of misplaced cells
-        return nb
+        misplaced_count = 0
+        for i in range(self.n):
+            for j in range(self.m):
+                if self.state[i][j] != j + self.n * i + 1:  
+                    misplaced_count += 1
+        return misplaced_count
 
     @staticmethod
     def trouver_coordonnees(liste, element):
@@ -422,13 +419,13 @@ class Grid():
             # If the current node is the destination, return the found path.
             if s == ndst:
                 return path
-    
+            liste_des_voisins = []
             # Iterate through all grid cells to find possible movements.
             for i in range(m):
                 for j in range(n):
                     # Evaluate possible movements and add them if new.
                     if i < m - 1:  # Move down.
-                        down = self.swap([(i, j), (i + 1, j)])  # Perform the swap.
+                        down = self.swap((i, j), (i + 1, j))  # Perform the swap.
                         h_down = down.make_hashable()  # Convert to a hashable node.
                         # Check the uniqueness of the new node before adding it.
                         if h_down not in dico.graph[s]:
@@ -437,21 +434,21 @@ class Grid():
                             liste_des_voisins.append((h_down, down.heuristique1()))
 
                     if i > 0:  # Move up.
-                        up = self.swap([(i, j), (i - 1, j)])
+                        up = self.swap((i, j), (i - 1, j))
                         h_up = up.make_hashable()
                         if h_up not in dico.graph[s]:
                             dico.add_edge(s, h_up)
                             liste_des_voisins.append((h_up, up.heuristique1()))
 
                     if j < n-1:
-                        right = self.swap([(i, j), (i, j+1)])
+                        right = self.swap((i, j), (i, j+1))
                         h_right = right.make_hashable()
                         if h_right not in dico.graph[s]:
                             dico.add_edge(s, h_right)
                             liste_des_voisins.append((h_right, right.heuristique1()))
 
                     if j > 0:
-                        left = self.swap([(i, j), (i, j-1)])
+                        left = self.swap((i, j), (i, j-1))
                         h_left = left.make_hashable()
                         if h_left not in dico.graph[s]:
                             dico.add_edge(s, h_left)

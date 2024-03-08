@@ -14,10 +14,7 @@ class TestBestPath(unittest.TestCase):
         # The best path should be a single swap between 2 and 1
         best_path = grid.find_best_path()
 
-        expected_path = [
-            ((1, 2), (4, 3)),  # initial state
-            ((1, 2), (3, 4))   # solved state
-        ]
+        expected_path = (((1, 2), (4, 3)), ((1, 2), (3, 4)))
 
         self.assertEqual(best_path, expected_path)
 

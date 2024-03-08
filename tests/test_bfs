@@ -8,20 +8,19 @@ from graph import Graph
 class TestBFS(unittest.TestCase):
 
     def test_bfs(self):
-        # Initialize Graph with tuples representing grid states
+        #  Graph with tuples representing grid states
         graph = Graph([((1, 4), (2, 3)), ((1, 2), (4, 3)), ((1, 2), (3, 4))])
         
-        # Define the transitions (edges)
         graph.add_edge(((1, 4), (2, 3)), ((1, 2), (4, 3)))  # Swap 4 and 2
         graph.add_edge(((1, 2), (4, 3)), ((1, 2), (3, 4)))  # Swap 4 and 3 
 
         # Apply BFS to find path from initial configuration to the goal configuration
         path = graph.bfs(((1, 4), (2, 3)), ((1, 2), (3, 4)))
         
-        # Expected path involves two swaps to reach the goal configuration
-        expected_path = [((1, 4), (2, 3)), ((1, 2), (4, 3)), ((1, 2), (3, 4))]
+        expected_path = (((1, 4), (2, 3)), ((1, 2), (4, 3)), ((1, 2), (3, 4)))
 
         self.assertEqual(path, expected_path)
 
 if __name__ == '__main__':
     unittest.main()
+

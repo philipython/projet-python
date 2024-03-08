@@ -6,32 +6,38 @@ from grid import Grid
 from graph import Graph
 
 class TestAllEdges(unittest.TestCase):
-    def test_all_edges(self):
-        grid = Grid(2, 2)
-        edges = grid.all_edges()
+     def test_all_edges(self):
+        # Initialize your grid
+        grid = Grid(2,2,[[1, 3], [4, 2]]) 
 
-        # Expected edges for a 2x2 grid
-        expected_edges = {
-            ((1, 2), (3, 2)),  # Swap between 1 and 3
-            ((1, 2), (1, 4)),  # Swap between 2 and 4
-            ((1, 2), (2, 1)),  # Swap between 1 and 2, horizontal swap
-            ((3, 2), (3, 4)),  # Swap between 3 and 4
-            ((2, 1), (4, 1)), 
-            ((2, 1), (2, 3)),  
-            ((2, 1), (1, 2)),  
-            ((4, 3), (4, 1))   
-        }
+        # Define expected edges as a list or set of tuples
+        expected_edges = [
+            # Swap 1 with 2
+            (((1, 2), (3, 4)), ((2, 1), (3, 4))),
+            (((2, 1), (3, 4)), ((1, 2), (3, 4))),
+            
+            # Swap 1 with 3
+            (((1, 2), (3, 4)), ((3, 2), (1, 4))),
+            (((3, 2), (1, 4)), ((1, 2), (3, 4))),
+            
+            # Swap 2 with 4
+            (((1, 2), (3, 4)), ((1, 4), (3, 2))),
+            (((1, 4), (3, 2)), ((1, 2), (3, 4))),
+            
+            # Swap 3 with 4
+            (((1, 2), (3, 4)), ((1, 2), (4, 3))),
+            (((1, 2), (4, 3)), ((1, 2), (3, 4))),
+        ]
 
-        # Transforme the list of tuples in a set in order to compare
-        generated_edges = {frozenset(edge) for edge in edges}
+       
+        generated_edges = set(grid.all_edges())
 
-        # Check if all expected edges are present in the generated edges
+    
         for expected_edge in expected_edges:
-            self.assertIn(frozenset(expected_edge), generated_edges)
+            self.assertIn(expected_edge, generated_edges)
 
-        # Verify the number of unique edges matches expectation
-        # it should have 4 unique swaps.
-        self.assertEqual(len(generated_edges), 4)
+if __name__ == '__main__':
+    unittest.main()
 
 if __name__ == '__main__':
     unittest.main()

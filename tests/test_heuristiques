@@ -9,7 +9,7 @@ class TestHeuristique(unittest.TestCase):
         # Test case with a known number of misplaced tiles
         print("Test heuristique0")
         grille_init = [[1, 3], [4, 2]]
-        expected_misplaced = 2 
+        expected_misplaced = 3 
 
         grid = Grid(2, 2, grille_init)
         misplaced_count = grid.heuristique0()
