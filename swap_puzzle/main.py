@@ -149,6 +149,7 @@ print(path)
 
 
 
+
 data_path = "../input/"
 file_name = data_path + "grid0.in"
 
