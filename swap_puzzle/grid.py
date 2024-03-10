@@ -8,6 +8,8 @@ from collections import deque
 import math 
 import matplotlib.pyplot as plt 
 from graph import Graph
+from heapq import heappop, heappush
+import copy
 
 
 class GridVisualizer: # Defines a class to visualize a grid using Pygame
@@ -407,62 +409,30 @@ class Grid():
 
 
     def bfs_ter(self, dst):
-        dico = Graph([self.make_hashable()])
-        m, n = self.m, self.n  # Grid dimensions
-        # Initialize a queue to store explored paths
-        file = deque([(self.make_hashable(), [self.make_hashable()])])
-        ndst = dst.make_hashable()
-    
+        # Initialisation avec l'état actuel de la grille et un chemin vide.
+        file = [(self.heuristique1(), [], self)]
+        visited = set([self.make_hashable()])  # Garde une trace des états visités
+
         while file:
-            # Pop the first element from the queue for processing.
-            s, path = file.popleft()
-            # If the current node is the destination, return the found path.
-            if s == ndst:
-                return path
-            liste_des_voisins = []
-            # Iterate through all grid cells to find possible movements.
-            for i in range(m):
-                for j in range(n):
-                    # Evaluate possible movements and add them if new.
-                    if i < m - 1:  # Move down.
-                        down = self.swap((i, j), (i + 1, j))  # Perform the swap.
-                        h_down = down.make_hashable()  # Convert to a hashable node.
-                        # Check the uniqueness of the new node before adding it.
-                        if h_down not in dico.graph[s]:
-                            dico.add_edge(s, h_down)  # Add the edge to the graph.
-                            # Store the node and its heuristic value for future comparison.
-                            liste_des_voisins.append((h_down, down.heuristique1()))
+            _, path, current_grid = heappop(file)
+            current_state = current_grid.make_hashable()
 
-                    if i > 0:  # Move up.
-                        up = self.swap((i, j), (i - 1, j))
-                        h_up = up.make_hashable()
-                        if h_up not in dico.graph[s]:
-                            dico.add_edge(s, h_up)
-                            liste_des_voisins.append((h_up, up.heuristique1()))
+            if current_state == dst.make_hashable():
+                return path  # Retourne le chemin sous forme de swaps
 
-                    if j < n-1:
-                        right = self.swap((i, j), (i, j+1))
-                        h_right = right.make_hashable()
-                        if h_right not in dico.graph[s]:
-                            dico.add_edge(s, h_right)
-                            liste_des_voisins.append((h_right, right.heuristique1()))
+            for i in range(self.m):
+                for j in range(self.n):
+                    for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                        x, y = i + dx, j + dy
+                        if 0 <= x < self.m and 0 <= y < self.n:
+                            new_grid = copy.deepcopy(current_grid)
+                            if (abs(i - x) == 1 and j == y) or (abs(j - y) == 1 and i == x):
+                                new_grid.swap((i, j), (x, y))
+                                new_state = new_grid.make_hashable()
 
-                    if j > 0:
-                        left = self.swap((i, j), (i, j-1))
-                        h_left = left.make_hashable()
-                        if h_left not in dico.graph[s]:
-                            dico.add_edge(s, h_left)
-                            liste_des_voisins.append((h_left, left.heuristique1()))
-                    
-            # Sort neighbors based on their heuristic evaluation to choose the optimal path.
-            liste_des_voisins.sort(key=lambda x: x[1])
-    
-            # Queue new possible paths for future exploration.
-            for elem in liste_des_voisins:
-                if elem[0] not in path:
-                    file.append((elem[0], path + [elem[0]]))
-    
-        # Return None if no path is found to the destination.
-        return None
-    
-    
+                                if new_state not in visited:
+                                    visited.add(new_state)
+                                    new_path = path + [((i, j), (x, y))]
+                                    heappush(file, (new_grid.heuristique1() + len(new_path), new_path, new_grid))
+
+        return None  # Retourne None si aucun chemin n'est trouvé
