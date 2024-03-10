@@ -145,6 +145,13 @@ def create_random_grid(size):
 grid0 = create_random_grid(3)
 print(grid0)
 
+#test draw grid
+print("test draw_grid")
+grille_init1 = [[1, 3], [4, 2]]
+nouvelle_grille1 = Grid(len(grille_init1), len(grille_init1[0]), grille_init1)
+
+print(nouvelle_grille1.draw_grid())
+
 
 
 

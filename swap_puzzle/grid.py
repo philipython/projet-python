@@ -31,11 +31,11 @@ class GridVisualizer: # Defines a class to visualize a grid using Pygame
         self.width = self.n * self.cell_size #Calculates the Pygame window width based on the number of columns and cell size
         self.height = self.m * self.cell_size #Calculates the Pygame window height based on the number of rows and cell size
         
-        """
+        
         pygame.init()
         self.screen = pygame.display.set_mode((self.width, self.height)) #Creates the display window with the calculated dimensions
         pygame.display.set_caption("Grid Representation") # sets a title
-        """
+        
         
         self.background_color = (255, 255, 255) # background color of the screen : white
     
@@ -69,6 +69,7 @@ class GridVisualizer: # Defines a class to visualize a grid using Pygame
 
         # Update the display to show the new grid
         pygame.display.flip()
+
 
     def run(self):
         """
