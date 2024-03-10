@@ -32,7 +32,7 @@ class Game:
         if path is not None:
             self.max_moves = len(path)
         else:
-            print("No solution found using bfs_ter. Defaulting to a high max_moves value.")
+            print("problem with bfs")
             self.max_moves = sys.maxsize
 
     def draw(self, screen):
@@ -99,7 +99,7 @@ class Game:
                 screen.blit(text, text_rect)
                 pygame.display.flip()
                 pygame.time.wait(3000)
-                return "continue"  # ou "lose" selon comment vous voulez gérer cela.
+                return "continue" 
         elif self.moves > self.max_moves:
             font = pygame.font.Font(None, 74)
             text = font.render('You lose!', True, RED)
@@ -112,7 +112,7 @@ class Game:
 
 def choose_difficulty():
     difficulty = input("Choose difficulty - Easy (3x3), Medium (4x4), Hard (5x5): ").strip().lower()
-    size = 3  # default is easy
+    size = 3  
     if difficulty == 'medium':
         size = 4
     elif difficulty == 'hard':

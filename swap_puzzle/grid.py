@@ -383,7 +383,8 @@ class Grid():
             for j in range(self.m):
                 if self.state[i][j] != j + self.n * i + 1:  
                     misplaced_count += 1
-        return misplaced_count
+        # Return the total distance divided by 2 to ensure it is less than real distance
+        return misplaced_count/2
 
     @staticmethod
     def trouver_coordonnees(liste, element):
@@ -409,15 +410,15 @@ class Grid():
                 # Find the current position of k and calculate Manhattan distance.
                 x, y = self.trouver_coordonnees(l, k)
                 dist += abs(x - i) + abs(y - j)
-        # Return the total distance 
-        return dist 
+        # Return the total distance divided by 2 to ensure it is less than real distance
+        return dist/2
 
 
 
     def bfs_ter(self, dst):
         # Initialisation avec l'état actuel de la grille et un chemin vide.
         file = [(self.heuristique1(), [], self)]
-        visited = set([self.make_hashable()])  # Garde une trace des états visités
+        visited = set([self.make_hashable()])  
         hash_dst = dst.make_hashable()
         while file:
             _, path, current_grid = heappop(file)
