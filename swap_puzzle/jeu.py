@@ -27,7 +27,7 @@ class Game:
         solved_state = [list(range(i * grid.n + 1, (i + 1) * grid.n )) for i in range(grid.m)]
         solved_grid = Grid(grid.m, grid.n, solved_state)
 
-        # Calculer le nombre maximal de mouvements via bfs_ter.
+        # Calculer le nombre maximal de mouvements que l'utilisateur aura le droitt de faire via bfs_ter.
         path = grid.bfs_ter(solved_grid)
         if path is not None:
             self.max_moves = len(path)
