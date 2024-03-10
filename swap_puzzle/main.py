@@ -5,6 +5,7 @@ ctrl + clic + run in interractive window : donne les resultats dans une nouvelle
 from grid import Grid
 from graph import Graph
 from collections import deque
+import random
 
 # test is_sorted
 print("test is_sorted : ")
@@ -133,6 +134,16 @@ path = nouvelle_grille1.bfs_ter(nouvelle_grille_target)
 print(path) 
 
 
+# test create_random_grid
+def create_random_grid(size):
+    numbers = random.sample(range(1, size*size+1), size*size)
+    grid = [numbers[i:i + size] for i in range(0, size*size, size)]
+    grid2 = Grid(size, size, grid)
+    return grid2
+
+
+grid0 = create_random_grid(3)
+print(grid0)
 
 
 
@@ -149,7 +160,7 @@ print(path)
 
 
 
-
+"""
 data_path = "../input/"
 file_name = data_path + "grid0.in"
 
@@ -168,3 +179,4 @@ graph.add_edge("Paris","Palaiseau")
 
 grille_init = [[1,3],[4,2]]
 
+"""

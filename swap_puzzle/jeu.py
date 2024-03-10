@@ -3,101 +3,152 @@ from grid import Grid
 from graph import Graph
 import pygame
 import random
-from pygame.locals import *
+import sys
 
-import pygame
 
-import random
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
 
-class Grid:
-    def __init__(self, rows, cols, difficulty):
-        self.rows = rows
-        self.cols = cols
-        self.grid = self.create_random_grid(rows, cols, difficulty)
-
-    def create_random_grid(self, rows, cols, difficulty):
-        numbers = [i for i in range(1, rows*cols+1)]
-        random.shuffle(numbers)
-
-        grid = [[0 for _ in range(cols)] for _ in range(rows)]
-
-        index = 0
-        for row in range(rows):
-            for col in range(cols):
-                if index < len(numbers):
-                    grid[row][col] = numbers[index]
-                    index += 1
-
-        for _ in range(difficulty):
-            row1, col1 = random.randint(0, rows-1), random.randint(0, cols-1)
-            row2, col2 = random.randint(0, rows-1), random.randint(0, cols-1)
-            grid[row1][col1], grid[row2][col2] = grid[row2][col2], grid[row1][col1]
-
-        return grid
-
-    def __str__(self):
-        return '\n'.join([' '.join(map(str, row)) for row in self.grid])
+def create_random_grid(size):
+    numbers = random.sample(range(1, size*size+1), size*size)
+    grid = [numbers[i:i + size] for i in range(0, size*size, size)]
+    grid2 = Grid(size, size, grid)
+    return grid2
 
 class Game:
-    def __init__(self):
-        self.difficulty = None
-        self.grid = None
+    def __init__(self, grid):
+        self.grid = grid
+        self.selected_row = -1
+        self.selected_col = -1
+        self.moves = 0
+        # On doit passer ici une grille résolue pour calculer le chemin optimal.
+        
+        solved_state = [list(range(i * grid.n + 1, (i + 1) * grid.n )) for i in range(grid.m)]
+        solved_grid = Grid(grid.m, grid.n, solved_state)
 
-    def choose_difficulty(self):
-        print("Choisissez le niveau de difficulté :")
-        print("1. Facile (3x3)")
-        print("2. Moyen (4x4)")
-        print("3. Difficile (5x5)")
-        choice = input("Entrez le numéro correspondant au niveau de difficulté : ")
-
-        if choice == '1':
-            self.difficulty = 5
-            self.grid = Grid(3, 3, self.difficulty)
-        elif choice == '2':
-            self.difficulty = 10
-            self.grid = Grid(4, 4, self.difficulty)
-        elif choice == '3':
-            self.difficulty = 15
-            self.grid = Grid(5, 5, self.difficulty)
+        # Calculer le nombre maximal de mouvements via bfs_ter.
+        path = grid.bfs_ter(solved_grid)
+        if path is not None:
+            self.max_moves = len(path)
         else:
-            print("Choix invalide. Veuillez choisir un niveau de difficulté valide.")
-            self.choose_difficulty()
+            print("No solution found using bfs_ter. Defaulting to a high max_moves value.")
+            self.max_moves = sys.maxsize
 
-    def play(self):
-        self.choose_difficulty()
-        print("Voici la grille de jeu :\n")
-        print(self.grid)
-        print("Déplacez les nombres pour les ordonner de manière croissante.\nUtilisez les touches 'w' pour monter, 'a' pour aller à gauche, 's' pour descendre et 'd' pour aller à droite.")
+    def draw(self, screen):
+        tile_width = WINDOW_WIDTH // self.grid.n
+        tile_height = WINDOW_HEIGHT // self.grid.m
 
-        while not self.is_solved():
-            move = input("Entrez votre prochain mouvement (w/a/s/d) ou 'q' pour quitter : ")
-            if move == 'q':
-                print("Merci d'avoir joué !")
-                return
-            elif move in ['w', 'a', 's', 'd']:
-                if self.make_move(move):
-                    print("Mouvement valide !")
-                else:
-                    print("Mouvement invalide. Veuillez réessayer.")
+        for row in range(self.grid.m):
+            for col in range(self.grid.n):
+                tile_value = self.grid.state[row][col]
+                rect = pygame.Rect(col * tile_width, row * tile_height, tile_width, tile_height)
+                pygame.draw.rect(screen, BLACK, rect, 3)
+
+                inner_rect = rect.inflate(-6, -6)
+                pygame.draw.rect(screen, WHITE, inner_rect)
+
+                font = pygame.font.Font(None, 36)
+                text = font.render(str(tile_value), True, BLACK)
+                text_rect = text.get_rect(center=rect.center)
+                screen.blit(text, text_rect)
+
+                if self.selected_row == row and self.selected_col == col:
+                    pygame.draw.rect(screen, RED, rect, 5)
+
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = pygame.mouse.get_pos()
+            self.selected_row = mouse_pos[1] // (WINDOW_HEIGHT // self.grid.m)
+            self.selected_col = mouse_pos[0] // (WINDOW_WIDTH // self.grid.n)
+        
+        elif event.type == pygame.KEYDOWN and self.selected_row >= 0 and self.selected_col >= 0:
+            if self.move_tile(event.key):
+                self.moves += 1
+
+    def move_tile(self, key):
+        delta = {pygame.K_UP: (-1, 0), pygame.K_DOWN: (1, 0), pygame.K_LEFT: (0, -1), pygame.K_RIGHT: (0, 1)}
+        if key in delta:
+            dx, dy = delta[key]
+            new_row = self.selected_row + dx
+            new_col = self.selected_col + dy
+            if 0 <= new_row < self.grid.m and 0 <= new_col < self.grid.n:
+                self.grid.swap((self.selected_row, self.selected_col), (new_row, new_col))
+                self.selected_row, self.selected_col = new_row, new_col
+                return True
+        return False
+
+    def check_game_over(self, screen):
+        # Si la grille est triée et que le nombre de mouvements est égal au nombre minimal de swaps,
+        # l'utilisateur gagne. Sinon, s'il dépasse ce nombre, il perd.
+        if self.grid.is_sorted():
+            if self.moves == self.max_moves:
+                font = pygame.font.Font(None, 74)
+                text = font.render('You win!', True, RED)
+                text_rect = text.get_rect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
+                screen.blit(text, text_rect)
+                pygame.display.flip()
+                pygame.time.wait(3000)
+                return "win"
             else:
-                print("Mouvement invalide. Veuillez entrer 'w', 'a', 's', 'd' ou 'q'.")
+                # Afficher un message indiquant que l'utilisateur a résolu la grille, 
+                # mais pas avec le nombre minimal de swaps.
+                font = pygame.font.Font(None, 74)
+                text = font.render('Optimal solution not achieved!', True, RED)
+                text_rect = text.get_rect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
+                screen.blit(text, text_rect)
+                pygame.display.flip()
+                pygame.time.wait(3000)
+                return "continue"  # ou "lose" selon comment vous voulez gérer cela.
+        elif self.moves > self.max_moves:
+            font = pygame.font.Font(None, 74)
+            text = font.render('You lose!', True, RED)
+            text_rect = text.get_rect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
+            screen.blit(text, text_rect)
+            pygame.display.flip()
+            pygame.time.wait(3000)
+            return "lose"
+        return "continue"
 
-    def is_solved(self):
-        return self.grid.is_sorted()
+def choose_difficulty():
+    difficulty = input("Choose difficulty - Easy (3x3), Medium (4x4), Hard (5x5): ").strip().lower()
+    size = 3  # default is easy
+    if difficulty == 'medium':
+        size = 4
+    elif difficulty == 'hard':
+        size = 5
+    return size
 
-    def make_move(self, direction):
-        if direction == 'w':
-            return self.grid.move_up()
-        elif direction == 'a':
-            return self.grid.move_left()
-        elif direction == 's':
-            return self.grid.move_down()
-        elif direction == 'd':
-            return self.grid.move_right()
+# Initialisation de Pygame
+pygame.init()
+WINDOW_WIDTH = 600
+WINDOW_HEIGHT = 600
+screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+pygame.display.set_caption("Puzzle Game")
+
+# Demander à l'utilisateur de choisir la difficulté avant de lancer le jeu
+grid_size = choose_difficulty()
+initial_grid = create_random_grid(grid_size)
+game = Game(initial_grid)
+
+# Boucle principale du jeu
+running = True
+while running:
+    screen.fill(WHITE)
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
         else:
-            return False
+            game.handle_event(event)
 
+    game_status = game.check_game_over(screen)
+    if game_status in ["win", "lose"]:
+        running = False
 
-# Initialisation et début du jeu
-game = Game()
-game.play()
+    game.draw(screen)
+    pygame.display.flip()
+
+pygame.quit()
+sys.exit()
+
