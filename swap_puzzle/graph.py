@@ -104,19 +104,37 @@ class Graph:
         path: list[NodeType] | None
             The shortest path from src to dst. Returns None if dst is not reachable from src
         """ 
-        
+        list_visited = set()
+        list_visited.add(node_1)
+
         def find_neighbors(edges, node):
+            """The graph should be unoriented but the edges are stored as tuples (node1, node2)
+            and do not necessarily contain both (node1, node2) and (node2, node1)."""
             #filters edges where the first node matches the given node
-            edges_out = [edge for edge in edges if edge[0] == node]
+            edges_out = [edge for edge in edges if edge[0] == node and edge[1] not in list_visited]
             # Extracts second nodes to get the neighbors
             neighbors = [edge[1] for edge in edges_out]
+            
+            #filters edges where the second node matches the given node
+            edges_in = [edge for edge in edges if edge[1] == node and edge[0] not in list_visited]
+            # Extracts first nodes to get the neighbors
+            neighbors += [edge[0] for edge in edges_in]
             return neighbors
-        
-        graph = self
-        # Start with paths that are just direct edges from node_1.
-        list_paths = [edge for edge in self.edges if edge[0] == node_1]
         if node_1 == node_2:
-            return []
+            return [node_1]
+        # Start with paths that are just direct edges from node_1.
+        list_paths = []
+        for edge in self.edges:
+            if edge[0] == node_1:
+                if edge[0] == node_1:
+                    list_paths.append((edge[0], edge[1]))
+                    list_visited.add(edge[1])
+                if edge[1] == node_1:
+                    list_paths.append((edge[1], edge[0]))
+                    list_visited.add(edge[0])
+
+        list_paths += [(edge[1], edge[0]) for edge in self.edges if edge[1] == node_1]
+
         found = False
         while not found:
             new_paths = []

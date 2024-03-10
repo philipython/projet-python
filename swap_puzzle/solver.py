@@ -42,7 +42,6 @@ class Solver():
                 return list_moves
             else:
                 if shift >= 1: #shift the element to the right
-                    
                     line[current_column], line[current_column + 1] = line[current_column + 1], line[current_column]
                     list_moves.append(((line_index, current_column),(line_index, current_column + 1)))
                     return align_element_in_line(grid, line_index, current_column + 1, shift - 1, list_moves)
@@ -93,7 +92,6 @@ class Solver():
                         list_moves.append(((i,j),(i,j+1)))
                         grid.state[i][j], grid.state[i][j+1] = grid.state[i][j+1], grid.state[i][j]
             return list_moves
-        # the complexity is O(nm)
 
         while not self.grid.is_sorted():
             big_list_moves += sort_all_lines(self.grid)

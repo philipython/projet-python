@@ -86,7 +86,6 @@ class GridVisualizer: # Defines a class to visualize a grid using Pygame
             
         pygame.quit()
         
-
      
 
 
@@ -128,14 +127,23 @@ class Grid():
 
     def __str__(self):
         """
-        Prints the state of the grid as text :
+        Prints the state of the grid as text.
         """
         output = f"The grid is in the following state:\n"
         for i in range(self.m): 
             output += f"{self.state[i]}\n"
         return output
 
+    '''
+    # representation with pygame
+    def __str__(self):
+        """Use the class GridVisualizer to visualize the grid"""
 
+        visualizer = GridVisualizer(self.state)
+        visualizer.run()
+        return ""
+    '''
+    
     def __repr__(self): 
         """
         Returns a representation of the grid with number of rows and columns.
@@ -149,12 +157,15 @@ class Grid():
     
     def is_sorted(self):
         """
-        Checks is the current state of the grid is sorted and returns the answer as a boolean.
+        Checks if the current state of the grid is sorted and returns the answer as a boolean.
         """
+        # Check if the numbers in each line are sorted
         for i in range(self.m):
             for j in range(self.n - 1):
                 if self.state[i][j] > self.state[i][j+1]:
                     return False
+                
+        # Check if the jumps from one line to the next preserve the order
         for i in range(0, self.m - 1):
             if self.state[i][-1] > self.state[i+1][0]:
                 return False
@@ -174,7 +185,10 @@ class Grid():
         i2, j2 = cell2
         if (abs(i1-i2)==0 and abs(j1-j2)==1) or (abs(i1-i2)==1 and abs(j1-j2)==0):
              self.state[i1][j1], self.state[i2][j2] = self.state[i2][j2], self.state[i1][j1]
+        else:
+            raise Exception("the two cells are not next to each other")
         return self
+    
     
     def swap_seq(self, cell_pair_list):
         """
@@ -203,6 +217,8 @@ class Grid():
                 c = self.state[j][i]
                 ax.text(i, j, str(c), va='center', ha='center')
         plt.show()
+
+        
 
     
     """ 
@@ -270,6 +286,7 @@ class Grid():
     We will apply BFS to the grid, starting from 'self' (the current grid), and aiming for the solved grid
     We will find the best path between the current grid and the solved one
     """
+    
     def find_best_path(self):
         if not hasattr(self, "path_graph"):
             path_graph_nodes = self.grids_graph()
@@ -329,10 +346,11 @@ class Grid():
             # Check if the current path's endpoint is the destination
             if s == ndst:
                 return path
-
+            save = copy.deepcopy(self.state)
             # Explore all possible moves from the current state
             for i in range(m):
                 for j in range(n):
+                    self.state = copy.deepcopy(save)
                     # Check all four directions where a swap can happen
                     # Swapping with the cell below
                     if i < m - 1:
@@ -343,13 +361,6 @@ class Grid():
                         if h_bas not in dico.graph[s]:
                             dico.add_edge(s, h_bas)
 
-                    # Swapping with the cell above
-                    if i > 0:
-                        haut = self.swap_seq([((i, j), (i - 1, j))])
-                        h_haut = haut.make_hashable()
-                        if h_haut not in dico.graph[s]:
-                            dico.add_edge(s, h_haut)
-
                     # Swapping with the cell to the right
                     if j < n - 1:
                         droite = self.swap_seq([((i, j), (i, j + 1))])
@@ -357,12 +368,6 @@ class Grid():
                         if h_droite not in dico.graph[s]:
                             dico.add_edge(s, h_droite)
 
-                    # Swapping with the cell to the left
-                    if j > 0:
-                        gauche = self.swap_seq([((i, j), (i, j - 1))])
-                        h_gauche = gauche.make_hashable()
-                        if h_gauche not in dico.graph[s]:
-                            dico.add_edge(s, h_gauche)
 
             # Add new states to explore to the queue
             for i in dico.graph[s]:
@@ -413,12 +418,12 @@ class Grid():
         # Initialisation avec l'état actuel de la grille et un chemin vide.
         file = [(self.heuristique1(), [], self)]
         visited = set([self.make_hashable()])  # Garde une trace des états visités
-
+        hash_dst = dst.make_hashable()
         while file:
             _, path, current_grid = heappop(file)
             current_state = current_grid.make_hashable()
 
-            if current_state == dst.make_hashable():
+            if current_state == hash_dst:
                 return path  # Retourne le chemin sous forme de swaps
 
             for i in range(self.m):

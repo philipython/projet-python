@@ -11,9 +11,11 @@ import copy
 class TestBfsTer(unittest.TestCase):
     def test_bfs_ter(self):
         source_grid = Grid(2, 2, [[1, 2], [4, 3]])
-        
+        #source_grid = Grid(2, 3 , [[1, 4, 6], [2, 3, 5]])
         target_state = [[1, 2], [3, 4]]
+        #target_state = [[1, 2, 3], [4, 5, 6]]
         target_grid = Grid(2, 2, target_state)
+        #target_grid = Grid(2, 3, target_state)
 
         source_grid.path_graph = Graph(source_grid.grids_graph())  # Dependency: grids_graph
         source_grid.path_graph.edges = source_grid.all_edges()     # Dependency: all_edges

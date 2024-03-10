@@ -51,6 +51,12 @@ print(nouvelle_grille1)
 representation = nouvelle_grille1.trace()
 print(representation)
 
+# test pygame 
+grille_init1 = [[1,3],[4,2]]
+nouvelle_grille1 = Grid(len(grille_init1),len(grille_init1[0]), grille_init1)
+print(nouvelle_grille1)
+
+
 # test make_hashable
 print("test make_hashable")
 grille_init1 = [[1,3],[4,2]]
